@@ -48,7 +48,8 @@
 # v1.2.0 - 19/08/2009 - Courgette 
 # * adds slap, nuke, mute new custom penalty types (can be used in censor or admin plugin)
 # * requires admin plugin v1.4+ and parser.py v1.10+
-
+# v1.2.1 - 27/08/09 - xlr8or, Ismael
+# * fully parses hit and kill lines
 
 __author__  = 'xlr8or'
 __version__ = '1.2.1'
@@ -105,7 +106,9 @@ class Iourt41Parser(b3.parsers.q3a.Q3AParser):
         #6:37 Kill: 0 1 16: XLR8or killed =lvl1=Cheetah by UT_MOD_SPAS
         #2:56 Kill: 14 4 21: Qst killed Leftovercrack by UT_MOD_PSG1
         #re.compile(r'^(?P<action>[a-z]+):\s(?P<data>(?P<acid>[0-9]+)\s(?P<cid>[0-9]+)\s(?P<aweap>[0-9]+):\s+(?P<text>.*))$', re.IGNORECASE),
-  re.compile(r'^(?P<action>[a-z]+):\s(?P<data>(?P<acid>[0-9]+)\s(?P<cid>[0-9]+)\s(?P<aweap>[0-9]+):\s+(?P<text>(?P<aname>[^ ]+)\skilled\s(?P<name>[^ ]+)\sby\s(?P<modname>.*)))$', re.IGNORECASE),      #re.compile(r'^(?P<action>[a-z]+):\s(?P<data>(?P<acid>[0-9]+)\s(?P<cid>[0-9]+)\s(?P<aweap>[0-9]+):\s+(?P<text>(?P<aname>[^:])\skilled\s(?P<name>[^:])\sby\s(?P<modname>.*)))$', re.IGNORECASE),
+        re.compile(r'^(?P<action>[a-z]+):\s(?P<data>(?P<acid>[0-9]+)\s(?P<cid>[0-9]+)\s(?P<aweap>[0-9]+):\s+(?P<text>(?P<aname>[^ ]+)\skilled\s(?P<name>[^ ]+)\sby\s(?P<modname>.*)))$', re.IGNORECASE), 
+
+#re.compile(r'^(?P<action>[a-z]+):\s(?P<data>(?P<acid>[0-9]+)\s(?P<cid>[0-9]+)\s(?P<aweap>[0-9]+):\s+(?P<text>(?P<aname>[^:])\skilled\s(?P<name>[^:])\sby\s(?P<modname>.*)))$', re.IGNORECASE),
 
         #Processing chats and tell events...
         #5:39 saytell: 15 16 repelSteeltje: nno
