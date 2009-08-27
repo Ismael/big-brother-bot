@@ -5,7 +5,8 @@
 #
 # v1.0.1 - 18/08/2009 -Ismael 
 #   * http://www.bigbrotherbot.com/forums/index.php?topic=797.msg7711#msg7711
-#
+# v1.0.2 - 27/08/2009 - Ismael
+#   Add support for extended (hit/kill) parser
 
 __author__  = 'Ismael'
 __version__ = '1.0.1'
@@ -83,16 +84,19 @@ class ProxyMatch(object):
     return setattr(self.m, attr, value)
 
   def group(self, attr):
-    if attr != 'cid':
+    if attr != 'cid' and attr != 'acid':
       return self.m.group(attr)
     
     #cid gets replaced by correct one by our PlayerDict
     pd = PlayerDict()
     try:
-      name = self.m.group('name')
+      if attr == 'cid':
+        name = self.m.group('name')
+      else:
+        name = self.m.group('aname')
       cid = pd.lookup(name)
       return cid
-    except: #Got no info about the name of the player (hit or kill event), leave unchanged (and wrong)
+    except: #Got no info about the name of the player, leave unchanged (and wrong)
       return self.m.group(attr)
     
 
