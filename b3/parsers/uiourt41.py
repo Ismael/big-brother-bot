@@ -13,9 +13,6 @@ __version__ = '1.0.1'
 
 import b3.parsers.iourt41
 
-from threading import Thread
-import time
-
 class PlayerDict(object):
   #A Singleton which holds the output from /rcon status (which we believe is always accurate)
   __instance = None
@@ -35,18 +32,12 @@ class PlayerDict(object):
 
   class __impl(object):
     def __init__(self):
-      #Every 5 minutes the player list is refreshed by another thread
-      self.t = PlayerDict.SchedUp(self.upddict)
       self.d = {}
 
     def init(self,  upd):
       """Assign the function to run to get the player dict (getPlayerList)"""
       self.upd = upd
       self.upddict()
-      
-      #Now we know the update function, if the Thread isn't running, start it
-      if not self.t._Thread__started: 
-        self.t.start()
       
     def upddict(self):
       """Update the info on the players"""
@@ -63,14 +54,6 @@ class PlayerDict(object):
         self.upddict()
         return self.d[name]
 
-  class SchedUp(Thread):
-    def __init__(self,  func):
-      Thread.__init__(self)
-      self.func = func
-    def run(self):
-      while 1:
-        self.func()
-        time.sleep(5*60)
 
 class ProxyMatch(object):
   def __init__(self, match):
