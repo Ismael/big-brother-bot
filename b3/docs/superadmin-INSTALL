@@ -1,0 +1,61 @@
+********* Installation of SuperAdmin for B3 *********
+
+* Place superadmin.py in plugins/ and superadmin.xml in conf/
+* In your b3.xml config, add in the plugin section (choose the correct priority):
+
+<plugin name="superadmin" priority="14" config="@b3/conf/superadmin.xml"/>
+
+* Adjust the minimal level for each command and enable or disable special features in superadmin.xml
+
+* Ready to go!
+
+********* New functionality provided *********
+**** General Admin ****
+
+!superlookup or !slookup
+
+Superlookup extends the lookup mechanism. Currently, lookup will only find players that are currently using a certain name. Superlookup will also find all players that used a name and changed it. This is useful for hunting people that use another's player name, cheat in their name, and change it.
+
+!allaliases or !allalias
+
+Allaliases extends the alias command, and will not limit itself to 10 answers as alias does. Optional parameter <detailed> will show alias creation and modification time plus number of times the alias was used.
+
+!listbans or !lb
+
+Listbans will display *ALL* active bans, expiration time, which admin applied it and what reason the admin gave. Optional parameter <admin> will list bans only by that admin.
+
+!superbaninfo or !sbaninfo
+
+Superbaninfo will display more information on a player's ban, including expiration time, which admin applied it and what reason the admin gave.
+
+!listids or !lids
+
+Listids will display the player ids of every online player. Alternatively, it can be used with a name, in which case, it will display the id of that player. By default, it's available to all players. The idea is that when someone demos a cheater, they can include the player id for easier banning afterwards.
+
+**** Ban Watcher ****
+** New commands **
+
+!pastbans or !pab
+
+Pastbans will display all past bans (tempbans and bans) of a player, who applied the ban and the expiration of the ban.
+
+** New functionality **
+
+If enabled is set to True, every time an admin applies a ban or a banned player tries to join all online admins will be told the amount of past bans that player has. 
+
+**** Notices ****
+
+This plugin will enhance the functionality on notices. To apply a notice to a player use !notice (normal bot command).
+
+** New commands **
+!lookupnotices or !lnot
+
+Lookupnotices will display all active notices for a player
+
+!deletenotice or !delnot
+
+Deletenotice will mark notice #number as inactive. The number is obtained from the !lnot listing.
+
+** New functionality **
+
+If lookup_on_login is set to True, the bot will search for a player's notices whenever it connects. If the player has notices, every online admin will get the listing of notices the player has.

@@ -1,0 +1,20 @@
+<configuration plugin="superadmin">
+	<settings name="settings">
+		<set name="min_level_superlookup">20</set>
+		<set name="min_level_allaliases">20</set>
+		<set name="min_level_superbaninfo">20</set>
+		<set name="min_level_listbans">40</set>
+		<set name="min_level_listids">0</set>
+	</settings>
+	
+	<settings name="supernotice">
+		<set name="lookup_on_login">True</set>
+		<set name="min_level_supernotice">20</set>
+	</settings>
+
+	<settings name="banwatcher">
+		<set name="enabled">True</set>
+		<set name="min_level_pastbans">40</set>
+	</settings>
+	
+</configuration>
