@@ -48,6 +48,7 @@ import b3
 import b3.plugin
 import b3.events
 import datetime
+import thread,  time
 
 #--------------------------------------------------------------------------------------------------
 class SuperadminPlugin(b3.plugin.Plugin):
@@ -246,12 +247,15 @@ class SuperadminPlugin(b3.plugin.Plugin):
 		if not self.console.storage.status():
 			cmd.sayLoudOrPM(client, '^7Cannot lookup, database apears to be ^1DOWN')
 			return False		
-		
+			
+		thread.start_new_thread(self._lookupnotice, (data, client,  cmd))
+	
+	def _lookupnotice(self, data, client, cmd=None):
 		m = self._adminPlugin.parseUserCmd(data)
 		if not m:
 			client.message('^7Invalid parameters')
 			return False
-	
+			
 		cid = m[0]
 		sclient = self._adminPlugin.findClientPrompt(cid, client)
 		if not sclient:
@@ -266,6 +270,7 @@ class SuperadminPlugin(b3.plugin.Plugin):
 		cmd.sayLoudOrPM(client,  '^7%s^7 notices:' %sclient.exactName)
 		for n in notices:
 			cmd.sayLoudOrPM(client,  n)
+			time.sleep(1)
 	
 
 	def cmd_superlookup(self,  data,  client,  cmd=None):
@@ -278,8 +283,11 @@ class SuperadminPlugin(b3.plugin.Plugin):
 		if not len(data):
 			client.message('^7You must supply a player to lookup')
 			return False
-
-		#Get all players that are currently using that name
+		
+		thread.start_new_thread(self._superlookup, (data, client,  cmd))
+		
+	def  _superlookup(self,  data,  client,  cmd=None):
+	#Get all players that are currently using that name
 		clients = self.console.clients.lookupByName(data)
 		
 		#Get all players that have used the alias
@@ -296,6 +304,7 @@ class SuperadminPlugin(b3.plugin.Plugin):
 			for c in clients:
 				cmd.sayLoudOrPM(client, "^7[^2@%s^7] %s (^3%s^7)" % (c.id,  c.exactName,  self.console.formatTime(c.timeEdit)))
 				ids.append(c.id)
+				time.sleep(1)
 		else:
 			cmd.sayLoudOrPM(client, "No players are currently using %s" % (data))
 		
@@ -308,6 +317,7 @@ class SuperadminPlugin(b3.plugin.Plugin):
 					msg += "^7[^2@%s^7] %s (^3%s^7)" % (r['id'],  r['name'],  self.console.formatTime(r['time_edit']))
 					cmd.sayLoudOrPM(client,  msg)
 					ids.append(int(r['id']))
+					time.sleep(1)
 				cursor.moveNext()
 		else:
 			cmd.sayLoudOrPM(client, "No players have used %s" % (data))
@@ -322,11 +332,14 @@ class SuperadminPlugin(b3.plugin.Plugin):
 			cmd.sayLoudOrPM(client, '^7Cannot lookup, database apears to be ^1DOWN')
 			return False		
 		
+		thread.start_new_thread(self._allaliases, (data, client,  cmd))
+	
+	def _allaliases(self, data, client, cmd):
 		m = self._adminPlugin.parseUserCmd(data)
 		if not m:
 			client.message('^7Invalid parameters')
 			return False
-	
+		
 		cid = m[0]
 		sclient = self._adminPlugin.findClientPrompt(cid, client)
 		if not sclient:
@@ -350,6 +363,7 @@ class SuperadminPlugin(b3.plugin.Plugin):
 			while not cursor.EOF:
 				r = cursor.getRow()
 				cmd.sayLoudOrPM(client, "^7%s, added ^3(%s) ^7last ^7modified ^3(%s) ^7used ^3%s ^7times" %(r['alias'], self.console.formatTime(r['time_add']), self.console.formatTime(r['time_edit']),  r['num_used']+1))
+				time.sleep(1)
 				cursor.moveNext()
 		
 		cursor.close()
@@ -388,7 +402,9 @@ class SuperadminPlugin(b3.plugin.Plugin):
 		if not self.console.storage.status():
 			cmd.sayLoudOrPM(client, '^7Cannot lookup, database apears to be ^1DOWN')
 			return False
-		
+		thread.start_new_thread(self._listbans, (data, client,  cmd))
+
+	def _listbans(self, data, client=None,  cmd=None):
 		adm = ""
 		ban = "TempBan"
 		if data:
@@ -427,6 +443,7 @@ class SuperadminPlugin(b3.plugin.Plugin):
 			r = cursor.getRow()
 			msg = "^7[^2@%s^7] %s (until ^3%s^7) ^7for ^7%s" % (r['id'],  r['name'],  self.console.formatTime(r['time_expire']),  r['reason'])
 			cmd.sayLoudOrPM(client,  msg)
+			time.sleep(1)
 
 			cursor.moveNext()
 
