@@ -1,0 +1,7 @@
+<configuration plugin="voting">
+	<settings name="settings">
+		<set name="min_level_reg">2</set>
+	</settings>
+		
+</configuration>
+ 
