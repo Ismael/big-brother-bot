@@ -80,17 +80,17 @@ class NickregPlugin(b3.plugin.Plugin):
 					#This nick isn't yours!
 					name = client.name
 					id = client.id
-					client.message("^2First warn: ^7Please change your ^7nickname, ^7this nick belongs to someone else")
+					client.message("^2First warn: ^7Please change your ^7nickname, ^7this nick (^3%s^7) belongs to someone else" % name)
 					
 					#Messy logic ahead! Each defined function adds a cron for the next one, defined inside of them.
 					def warn():
-						client.message("^2Second warn: ^7Please change your ^7nickname, ^7this nick belongs to someone else")
+						client.message("^2Second warn: ^7Please change your ^7nickname, ^7this nick (^3%s^7) belongs to someone else" % name)
 						def warn2():
 							if  name == client.name:
-								client.message("^1LAST warn: ^7Please change your ^7nickname, ^7this nick belongs to someone else. ^7You will be ^1KICKED!")
+								client.message("^1LAST warn: ^7Please change your ^7nickname, ^7this nick (^3%s^7) belongs ^7to someone else. ^7You will be ^1KICKED!" % name)
 								def kick():
 									if  name == client.name:
-										client.kick("This nickname isn't yours!",  None)
+										client.kick("This nickname (%s) isn't yours!" % name,  None)
 									self._watched.remove(client.id)
 								self.console.cron + b3.cron.OneTimeCronTab(kick,  "*/4")
 						self.console.cron + b3.cron.OneTimeCronTab(warn2,  "*/3")
