@@ -17,12 +17,14 @@
 #  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #
 # CHANGELOG
+# 14/01/09
+# Added !remnick and !findnick to remove nicks (by an admin) and find who is using a nick
 # 25/08/09
 # Escape player's nicks
 # 25/07/09
 # Initial version
 
-__version__ = '1.1'
+__version__ = '1.2'
 __author__  = 'Ismael'
 
 import b3
@@ -51,6 +53,11 @@ class NickregPlugin(b3.plugin.Plugin):
 		
 		self._adminPlugin.registerCommand(self, 'registernick', minlevel, self.cmd_regnick,  'regnick')
 		self._adminPlugin.registerCommand(self, 'deletenick', minlevel, self.cmd_delnick,  'delnick')
+                
+                minlevel_adm = self.config.getint('settings', 'min_level_nick_manage')
+                self._adminPlugin.registerCommand(self, 'findnick', minlevel_adm, self.cmd_findnick,  'findnick')
+		self._adminPlugin.registerCommand(self, 'removenick', minlevel_adm, self.cmd_remnick,  'remnick')
+
 		self.registerEvent(b3.events.EVT_CLIENT_NAME_CHANGE)
 
 	def onEvent(self,  event):
@@ -131,6 +138,9 @@ class NickregPlugin(b3.plugin.Plugin):
 		client.message('^7Your nick is now registered')
 	
 	def cmd_delnick(self,  data,  client,  cmd=None):
+                """\
+		Delete your current nick
+		"""
 		cursor = self.console.storage.query("""
 		SELECT n.name
 		FROM nicks n 
@@ -148,3 +158,51 @@ class NickregPlugin(b3.plugin.Plugin):
 		""" % (client.id))
 		cursor.close()
 		client.message("^7Nick deleted")
+
+        def cmd_remnick(self, data, client, cmd=None):
+                """\
+		Delete a users nick from the DB.
+		"""
+
+                m = self._adminPlugin.parseUserCmd(data)
+                if not m[0]:
+                    client.message('^7Invalid parameters')
+                    return False
+
+                cid = m[0]
+		sclient = self._adminPlugin.findClientPrompt(cid, client)
+
+		cursor = self.console.storage.query("""
+		DELETE FROM nicks
+		WHERE id = %s
+		""" % (sclient.id))
+		cursor.close()
+		client.message("^7User ^2@%s ^7nick deleted" % sclient.id)
+
+        def cmd_findnick(self, data, client, cmd=None):
+                """\
+		Find if a nick is registered.
+		"""
+                m = self._adminPlugin.parseUserCmd(data)
+                if not m[0]:
+                    client.message('^7Invalid parameters')
+                    return False
+                name = m[0]
+
+                cursor = self.console.storage.query("""
+                SELECT c.id, n.name
+                FROM clients c, nicks n
+                WHERE c.id = n.id &&
+                n.name LIKE '%%%s%%'"""%(name))
+
+		if cursor.rowcount == 0:
+                    client.message("^7Nobody has a nick like that registered")
+                    cursor.close()
+                    return False
+                else:
+                    while not cursor.EOF:
+                        r = cursor.getRow()
+                        msg = "^7[^2@%s^7] has ^7%s" % (r['id'],  r['name'])
+			cmd.sayLoudOrPM(client,  msg)
+                        cursor.moveNext()
+                    cursor.close()
