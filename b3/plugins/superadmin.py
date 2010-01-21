@@ -1,6 +1,6 @@
 # BigBrotherBot(B3) (www.bigbrotherbot.com)
 # Plugin for extra admin utilities
-# Copyright (C) 2009 Ismael Garrido
+# Copyright (C) 2010 Ismael Garrido
 # 
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -17,6 +17,8 @@
 #  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #
 # CHANGELOG
+# 21/01/10
+# !sbaninfo gives IP info
 # 29/05/09
 # Added !listids , Lists all players IDs
 # Changes in cmd_delnotice as suggested by xlr8or
@@ -48,7 +50,7 @@ import b3
 import b3.plugin
 import b3.events
 import datetime
-import thread,  time
+import thread, time
 
 #--------------------------------------------------------------------------------------------------
 class SuperadminPlugin(b3.plugin.Plugin):
@@ -385,14 +387,14 @@ class SuperadminPlugin(b3.plugin.Plugin):
 		if sclient:
 			numbans = sclient.numBans
 			if numbans:
-				cmd.sayLoudOrPM(client, '^7%s ^7has %s active bans' % (sclient.exactName, numbans))
+				cmd.sayLoudOrPM(client, '^7%s [^1%s^7] ^7has %s ^7active bans' % (sclient.exactName, sclient.ip, numbans))
 				bans = sclient.bans
 				for b in bans:
 					admin = self.console.storage.getClientsMatching({ 'id' : b.adminId })[0].name					
 					cmd.sayLoudOrPM(client,  '^7Banned by ^7%s ^7until ^3%s ^7for ^7reason ^7%s' % (admin,   self.console.formatTime(b.timeExpire),  b.reason))
 				
 			else:
-				cmd.sayLoudOrPM(client, '^7%s ^7has no active bans' % sclient.exactName)
+				cmd.sayLoudOrPM(client, '^7%s [^1%s^7] ^7has no ^7active bans' % (sclient.exactName, sclient.ip))
 
 		
 	def cmd_listbans(self, data, client=None, cmd=None):
